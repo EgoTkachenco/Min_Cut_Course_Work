@@ -1,6 +1,10 @@
 <template>
-  <div id="graph-input" class="row" v-if="matrix">
-    <div class="col-12 col-md-6 px-0 d-flex flex-column">
+  <div class="row" style="min-height: calc(100vh - 90px);">
+    <div
+      id="graph-input"
+      class="col-12 col-md-6 px-0 d-flex flex-column"
+      v-if="matrix"
+    >
       <div class="table-wrapper">
         <div class="d-flex align-items-start">
           <input class="label" disabled />
@@ -37,17 +41,41 @@
 
       <div class="d-flex mt-3 flex-grow-1">
         <div class="toolbar">
-          <button class="toolbar-btn" @click="fillTestData">
+          <div class="d-flex align-items-center">
+            <select class="custom-select py-0" style="height: 25px" required v-model="settings.method">
+              <option selected value="greedy_algoritm">Greedy Algoritm</option>
+              <option value="kargers_algoritm">Kargers Algoritm</option>
+            </select>
+          </div>
+          <button class="toolbar-btn ml-auto" @click="fillTestData">
             Test Data
           </button>
           <button class="toolbar-btn" @click="addVertex">
             Додати Вершину
           </button>
-          <button class="toolbar-btn" @click="save">
-            Save
+          <button class="toolbar-btn" @click="solve"> 
+            Solve
           </button>
         </div>
       </div>
+    </div>
+
+    <div class="col-12 col-md-6 px-0" v-else>
+      <form class="px-5 mt-5" @submit="createMatrix">
+        <input
+          required
+          type="number"
+          min="3"
+          max="100"
+          class="form-control"
+          v-model="matrixSize"
+          placeholder="Nodes number"
+        />
+
+        <button class="btn btn-outline-success d-block mx-auto my-3">
+          Initialize Matrix
+        </button>
+      </form>
     </div>
 
     <div class="col-12 col-md-6 px-0">
@@ -58,9 +86,15 @@
 
 <script>
   import Visualize from './app-graph-visualization';
-  import * as Graph from '../graph.js';
+
   export default {
-    data: () => ({}),
+    data: () => ({
+      matrixSize: null,
+      sizeError: '',
+      settings: {
+        method: 'greedy_algoritm'
+      }
+    }),
     computed: {
       matrix: {
         get() {
@@ -76,21 +110,13 @@
     },
     methods: {
       addVertex() {
-        this.matrix = this.initArray(1 + this.matrix.length, true);
+        this.matrix = this.initMatrix(1 + this.matrix.length, true);
       },
       fillTestData() {
-        let testArray = this.initArray(this.matrix.length, false);
-        for (const row in testArray) {
-          for (const col in testArray[row]) {
-            if (col > row) {
-              let data = Math.floor(Math.random() * 10);
-              testArray[row][col] = data;
-              testArray[col][row] = data;
-            }
-          }
-        }
-
-        this.matrix = testArray;
+        this.$store.dispatch(
+          'fillTestData',
+          this.initMatrix(this.matrix.length, false),
+        );
       },
       changeWeight(row, col, value) {
         let arr = this.initArray(this.matrix.length, true);
@@ -98,9 +124,8 @@
         arr[col][row] = Number(value);
         this.matrix = arr;
       },
-      initArray(size, inited) {
+      initMatrix(size, inited) {
         let arr = new Array(size).fill(0);
-
         for (const row in arr) {
           arr[row] = new Array(size).fill(0);
           for (const col in arr[row]) {
@@ -119,31 +144,19 @@
             arr[row][col] = data;
           }
         }
-
         return arr;
       },
-      save() {
-        let graph = new Graph(this.matrix);
-        console.log(graph);
-        let minNode = graph.getMinConnectiveNode();
-        console.log(minNode);
-        let maxConnectiveNode = graph.getNodeMaxConnectiveNode(minNode.node);
-        console.log(maxConnectiveNode);
-        graph.mergeNodes(minNode.node, maxConnectiveNode.node);
-        console.log(graph);
-        // this.graph = graph.matrix
+      createMatrix() {
+        this.matrix = this.initMatrix(Number(this.matrixSize), false);
       },
-    },
-    created() {
-      this.matrix = this.initArray(4, false);
+      solve() {
+        this.$store.dispatch('getSolution', this.settings);
+      },
     },
   };
 </script>
 
 <style scoped>
-  #graph-input {
-    min-height: calc(100vh - 90px);
-  }
   #graph-input input,
   #graph-input .label {
     min-width: 90px;

@@ -70,7 +70,11 @@ class Graph {
 		// this.nodes[node_2].name += ' ' + this.nodes[node_1].name; 
 		// this.matrix = newMatrix;
 		// this.saveGraph();
-  }
+	}
+	
+	greedyMinCut() {
+
+	}
 }
 
 module.exports = Graph;

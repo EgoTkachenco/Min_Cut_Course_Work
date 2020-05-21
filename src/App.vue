@@ -4,7 +4,11 @@
 
     <div class="flex-grow-1">
       <div class="container-fluid">
+
         <app-graph-input></app-graph-input>
+
+        <!-- Solution view -->
+
       </div>
     </div>
 
