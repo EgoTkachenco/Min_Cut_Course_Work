@@ -5,16 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    graph: null
+    matrix: null
   },
   mutations: {
-    'SET_GRAPH' (state, payload) {
-      state.graph = payload
+    'SET_MATRIX' (state, payload) {
+      state.matrix = payload
     }
   },
   actions: {
-    setGraph({commit}, graph) {
-      commit('SET_GRAPH', graph)
+    setMatrix({commit}, matrix) {
+      commit('SET_MATRIX', matrix)
     }
   },
   modules: {
