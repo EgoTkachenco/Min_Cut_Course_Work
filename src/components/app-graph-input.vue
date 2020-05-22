@@ -2,9 +2,8 @@
   <div class="row" style="min-height: calc(100vh - 90px);">
     <div
       id="graph-input"
-      class="col-12 col-md-6 px-0 d-flex flex-column"
-      v-if="matrix"
-    >
+      class="col px-0 d-flex flex-column"
+      v-if="matrix">
       <div class="table-wrapper">
         <div class="d-flex align-items-start">
           <input class="label" disabled />
@@ -51,7 +50,7 @@
             Test Data
           </button>
           <button class="toolbar-btn" @click="addVertex">
-            Додати Вершину
+            Add Vertex
           </button>
           <button class="toolbar-btn" @click="solve"> 
             Solve
@@ -60,7 +59,7 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-6 px-0" v-else>
+    <div class="col px-0" v-else>
       <form class="px-5 mt-5" @submit="createMatrix">
         <input
           required
@@ -119,7 +118,7 @@
         );
       },
       changeWeight(row, col, value) {
-        let arr = this.initArray(this.matrix.length, true);
+        let arr = this.initMatrix(this.matrix.length, true);
         arr[row][col] = Number(value);
         arr[col][row] = Number(value);
         this.matrix = arr;

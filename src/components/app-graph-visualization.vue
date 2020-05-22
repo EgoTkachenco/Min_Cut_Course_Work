@@ -73,6 +73,11 @@
         new vis.Network(container, data, options);
       },
     },
+    mounted() {
+      if(this.data) {
+        this.updateGraph();
+      }
+    },
   };
 </script>
 

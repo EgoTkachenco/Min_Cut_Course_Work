@@ -3,12 +3,14 @@
     <app-navbar></app-navbar>
 
     <div class="flex-grow-1">
-      <div class="container-fluid">
+      <div class="container-fluid position-relative">
 
-        <app-graph-input></app-graph-input>
-
-        <!-- Solution view -->
-
+        <component :is="activeCmp"></component>
+        
+        <div class="navigation-toolbar" v-if="solution">
+          <button class="btn btn-primary" @click="activeCmp = 'app-graph-input'">DATA</button>
+          <button class="btn btn-primary" @click="activeCmp = 'app-solution'">SOLUTION</button>
+        </div>
       </div>
     </div>
 
@@ -37,12 +39,27 @@
 <script>
   import Navbar from './components/app-navbar';
   import GraphInput from './components/app-graph-input';
-
+  import Solution from './components/app-solution';
   export default {
-    data: () => ({}),
+    data: () => ({
+      activeCmp: 'app-graph-input'
+    }),
+    computed: {
+      solution() {
+        return this.$store.state.solution;
+      }
+    },
+    watch: {
+      solution(val) {
+        if(val) {
+          this.activeCmp = 'app-solution';
+        }
+      }
+    },
     components: {
       'app-navbar': Navbar,
       'app-graph-input': GraphInput,
+      'app-solution': Solution,
     },
   };
 </script>
@@ -67,6 +84,16 @@
     background: #3f3f44;
     color: #fff;
     height: 30px;
+  }
+  .navigation-toolbar {
+    width: 25%;
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    left: calc(50% - 12.5%);
+    bottom: 0;
+    background: #3f3f44;
+    padding: 10px;
   }
   .toolbar {
     display: flex;

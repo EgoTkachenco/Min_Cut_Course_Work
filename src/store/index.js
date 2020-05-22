@@ -6,7 +6,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    matrix: null,
+    matrix: [
+      [null,2,0,0,3,0,0,0],
+      [2,null,3,0,2,2,0,0],
+      [0,3,null,4,0,0,2,0],
+      [0,0,4,null,0,0,2,2],
+      [3,2,0,0,null,3,0,0],
+      [0,2,0,0,3,null,1,0],
+      [0,0,2,2,0,1,null,3],
+      [0,0,0,2,0,0,3,null]
+    ],
     method: 'greedy_algoritm',
     graph: null,
     solution: null
@@ -17,6 +26,9 @@ export default new Vuex.Store({
     },
     'SET_GRAPH' (state) {
       state.graph = new Graph(state.matrix);
+    },
+    'GREEDY_CUT' (state) {
+      state.solution = state.graph.greedyMinCut();
     }
   },
   actions: {
@@ -24,8 +36,15 @@ export default new Vuex.Store({
       commit('SET_MATRIX', matrix)
     },
     getSolution({commit}, settings) {
-      console.log(settings)
       commit('SET_GRAPH')
+      switch (settings.method) {
+        case 'greedy_algoritm':
+          commit('GREEDY_CUT')
+          break;
+
+        default:
+          break;
+      }
     },
     fillTestData({commit}, testArray) {
       for (const row in testArray) {
