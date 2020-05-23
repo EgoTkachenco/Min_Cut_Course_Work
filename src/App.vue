@@ -2,17 +2,11 @@
   <div id="app">
     <app-navbar></app-navbar>
 
-    <div class="flex-grow-1">
-      <div class="container-fluid position-relative">
-
-        <component :is="activeCmp"></component>
-        
-        <div class="navigation-toolbar" v-if="solution">
-          <button class="btn btn-primary" @click="activeCmp = 'app-graph-input'">DATA</button>
-          <button class="btn btn-primary" @click="activeCmp = 'app-solution'">SOLUTION</button>
-        </div>
-      </div>
+    <div class="container-fluid flex-grow-1">
+      <component :is="activeCmp"></component>
     </div>
+
+    <app-toolbar></app-toolbar>
 
     <footer>
       <div>Tkachenko Yehor</div>
@@ -38,28 +32,22 @@
 
 <script>
   import Navbar from './components/app-navbar';
+  import Toolbar from './components/app-toolbar';
   import GraphInput from './components/app-graph-input';
   import Solution from './components/app-solution';
   export default {
     data: () => ({
-      activeCmp: 'app-graph-input'
     }),
     computed: {
-      solution() {
-        return this.$store.state.solution;
-      }
-    },
-    watch: {
-      solution(val) {
-        if(val) {
-          this.activeCmp = 'app-solution';
-        }
+      activeCmp() {
+        return this.$store.state.activeCmp;
       }
     },
     components: {
       'app-navbar': Navbar,
       'app-graph-input': GraphInput,
       'app-solution': Solution,
+      'app-toolbar': Toolbar
     },
   };
 </script>
@@ -75,6 +63,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+
   }
   footer {
     width: 100%;
@@ -85,35 +74,29 @@
     color: #fff;
     height: 30px;
   }
-  .navigation-toolbar {
-    width: 25%;
-    display: flex;
-    justify-content: space-around;
-    position: absolute;
-    left: calc(50% - 12.5%);
-    bottom: 0;
-    background: #3f3f44;
-    padding: 10px;
-  }
-  .toolbar {
-    display: flex;
-    align-self: flex-end;
-    justify-content: flex-end;
-    width: 100%;
-    background: #404E5C;
-  }
   .toolbar-btn {
-    padding: 10px 25px;
+    padding: 5px 25px;
     border: none;
     background: none;
     color: #fff;
     font-size: 18px;
     transition: all 300ms;
+    background: #3f3f44;
+		outline: none;
+  }
+  .toolbar-btn:focus{
+    outline-style: none;
   }
   .toolbar-btn:hover {
-    background: #3f3f44;
+    background: #616168f8;
   }
-  .toolbar-btn:focus {
-    outline: 1px solid #4062bb;
+  .toolbar-btn:active {
+		background: #4062bb;
   }
+	.toolbar-btn.active-view, .toolbar-btn.active  {
+		background: #4062bb;
+	}
+  .toolbar-btn.optimal {
+		background: #cceabb;
+	}
 </style>

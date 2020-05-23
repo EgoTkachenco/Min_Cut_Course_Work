@@ -5,29 +5,41 @@
 <script>
   import vis from 'vis';
   export default {
-    props: ['data'],
+    props: ['data', 'cut'],
+    data: () => ({
+      network: null,
+    }),
     watch: {
       data(val) {
         if (val) {
           this.updateGraph();
         }
       },
+      cut(val) {
+        if (val) {
+          this.updateGraph();
+        }
+      },
     },
     methods: {
+      isInCut(node_1, node_2) {
+        return this.cut && (this.cut.includes(node_1) && !this.cut.includes(node_2) || !this.cut.includes(node_1) && this.cut.includes(node_2) );
+      },
       updateGraph() {
         let nodes = [];
         for (const key in this.data) {
-          nodes.push({ 
-            id: String(Number(key) + 1), 
-            label: String(Number(key) + 1), 
+          nodes.push({
+            id: String(Number(key) + 1),
+            label: String(Number(key) + 1),
             shape: 'circle',
             widthConstraint: {
-              minimum: 35
+              minimum: 35,
             },
             font: {
               color: '#fff',
-              size: 20
-            }
+              size: 20,
+            },
+            group: this.cut && this.cut.includes(String(Number(key) + 1)) ? 'myGroup' : ''
           });
         }
         let edges = [];
@@ -39,42 +51,38 @@
                 to: String(Number(col) + 1),
                 label: String(this.data[row][col]),
                 font: { align: 'middle' },
-                length: 250,
-                physics: true,
+                color: {
+                  color: this.isInCut(String(Number(row) + 1), String(Number(col) + 1)) ? '#dc3545' : '#848484'
+                },
+                dashes: this.isInCut(String(Number(row) + 1), String(Number(col) + 1))
               });
             }
           }
         }
-        // create a network
         var container = document.getElementById('network');
         var data = {
-          nodes: nodes,
-          edges: edges,
+          nodes: new vis.DataSet(nodes),
+          edges: new vis.DataSet(edges),
         };
-        var options = { 
+        var options = {
           height: '100%',
           width: '100%',
           autoResize: true,
           groups: {
-            myGroup: {color:{background:'#EBEBEB'}, borderWidth: 1}
+            myGroup: { color: { background: '#dc3545 ' }, borderWidth: 1 },
           },
-          physics: {
-            enabled: true,
-            hierarchicalRepulsion: {
-              centralGravity: 0.5,
-              springLength: 500,
-              springConstant: 0.0,
-              nodeDistance: 200,
-              damping: 1,
-            },
-            solver: 'hierarchicalRepulsion',
+          layout: {
+            randomSeed: this.network ? this.network.getSeed() : undefined,
+            improvedLayout: true
           },
+          physics: false,
         };
-        new vis.Network(container, data, options);
+        this.network = new vis.Network(container, data, options);
+        this.$store.dispatch('setNetworkSeed', this.network.getSeed())        
       },
     },
     mounted() {
-      if(this.data) {
+      if (this.data) {
         this.updateGraph();
       }
     },
@@ -85,7 +93,7 @@
   #network {
     width: 100%;
     height: 100%;
-    background: #EBEBEB;
+    background: #ebebeb;
     border-left: 2px solid #3f3f44;
   }
 </style>

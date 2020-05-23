@@ -56,13 +56,21 @@ class Graph {
 		delete this.nodes[node_2].edges[node_1];
 		delete this.nodes[node_1];
 	}
-	
+  getRandomEdge() {
+    let nodes = Object.keys(this.nodes);
+    let node_1 = nodes[Math.floor(Math.random() * nodes.length)];
+
+    let edges = Object.keys(this.nodes[node_1].edges);
+    let edge = edges[Math.floor(Math.random() * edges.length)];
+    return { node_1: node_1, node_2: edge, weight: this.nodes[node_1].edges[edge].weight }
+  }
 	greedyMinCut() {
     let solution = { optimal: { weight: Infinity }, iterations: [] };
-    while(Object.keys(this.nodes).length > 2) {
+    while(Object.keys(this.nodes).length > 1) {
       let minNode = this.getMinConnectiveNode();
       let maxConnectiveNode = this.getNodeMaxConnectiveNode(minNode.node);
       this.mergeNodes(minNode.node, maxConnectiveNode.node);
+
       solution.iterations.push({ nodes: minNode.name, weight: minNode.weight })
     }
     solution.iterations.forEach(item => {
@@ -71,7 +79,16 @@ class Graph {
       }
     })
     return solution
-	}
+  }
+  kargersMinCut() {
+    // let solution = { optimal: { weight: Infinity }, iterations: [] };
+    let edge = null
+    while(Object.keys(this.nodes).length > 2) {
+      edge = this.getRandomEdge() 
+      this.mergeNodes(edge.node_1, edge.node_2);
+    } 
+    return { nodes: this.nodes[edge.node_2].name, weight: this.getNodeMaxConnectiveNode(edge.node_2).weight }
+  }
 }
 
 module.exports = Graph;

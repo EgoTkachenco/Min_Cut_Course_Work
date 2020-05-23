@@ -1,5 +1,5 @@
 <template>
-  <div class="row" style="min-height: calc(100vh - 90px);">
+  <div class="row" style="height: calc(100vh - 130px);">
     <div
       id="graph-input"
       class="col px-0 d-flex flex-column"
@@ -30,7 +30,7 @@
           <input
             v-for="(item, index) in matrix[rowIndex]"
             :key="rowIndex + ' ' + index"
-            type="text"
+            type="number"
             :disabled="index == rowIndex"
             :value="index != rowIndex ? matrix[rowIndex][index] : 'M'"
             @input="changeWeight(rowIndex, index, $event.target.value)"
@@ -38,25 +38,6 @@
         </div>
       </div>
 
-      <div class="d-flex mt-3 flex-grow-1">
-        <div class="toolbar">
-          <div class="d-flex align-items-center">
-            <select class="custom-select py-0" style="height: 25px" required v-model="settings.method">
-              <option selected value="greedy_algoritm">Greedy Algoritm</option>
-              <option value="kargers_algoritm">Kargers Algoritm</option>
-            </select>
-          </div>
-          <button class="toolbar-btn ml-auto" @click="fillTestData">
-            Test Data
-          </button>
-          <button class="toolbar-btn" @click="addVertex">
-            Add Vertex
-          </button>
-          <button class="toolbar-btn" @click="solve"> 
-            Solve
-          </button>
-        </div>
-      </div>
     </div>
 
     <div class="col px-0" v-else>
@@ -90,9 +71,6 @@
     data: () => ({
       matrixSize: null,
       sizeError: '',
-      settings: {
-        method: 'greedy_algoritm'
-      }
     }),
     computed: {
       matrix: {
@@ -108,15 +86,6 @@
       'app-visualize': Visualize,
     },
     methods: {
-      addVertex() {
-        this.matrix = this.initMatrix(1 + this.matrix.length, true);
-      },
-      fillTestData() {
-        this.$store.dispatch(
-          'fillTestData',
-          this.initMatrix(this.matrix.length, false),
-        );
-      },
       changeWeight(row, col, value) {
         let arr = this.initMatrix(this.matrix.length, true);
         arr[row][col] = Number(value);
@@ -147,10 +116,7 @@
       },
       createMatrix() {
         this.matrix = this.initMatrix(Number(this.matrixSize), false);
-      },
-      solve() {
-        this.$store.dispatch('getSolution', this.settings);
-      },
+      }
     },
   };
 </script>
@@ -158,7 +124,7 @@
 <style scoped>
   #graph-input input,
   #graph-input .label {
-    min-width: 90px;
+    min-width: 60px;
   }
   #graph-input .label {
     text-align: center;
