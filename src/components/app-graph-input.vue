@@ -1,47 +1,52 @@
 <template>
-  <div class="row" style="height: calc(100vh - 130px);">
-    <div
-      id="graph-input"
-      class="col px-0 d-flex flex-column"
-      v-if="matrix">
-      <div class="table-wrapper">
-        <div class="d-flex align-items-start">
-          <input class="label" disabled />
-          <input
-            v-for="(item, index) in matrix.length"
-            :key="index"
-            class="label"
-            type="text"
-            disabled
-            :value="`node ${index + 1}`"
-          />
-        </div>
-        <div
-          class="d-flex align-items-start"
-          v-for="(row, rowIndex) in matrix"
-          :key="rowIndex"
-        >
-          <input
-            class="label"
-            type="text"
-            disabled
-            :value="`node ${rowIndex + 1}`"
-          />
-          <input
-            v-for="(item, index) in matrix[rowIndex]"
-            :key="rowIndex + ' ' + index"
-            type="number"
-            :disabled="index == rowIndex"
-            :value="index != rowIndex ? matrix[rowIndex][index] : 'M'"
-            @input="changeWeight(rowIndex, index, $event.target.value)"
-          />
-        </div>
+  <div id="graph-input" class="d-flex flex-column">
+    <div v-if="matrix" class="table-wrapper">
+      <div class="d-flex align-items-start">
+        <input class="label" disabled />
+        <input
+          v-for="(item, index) in matrix.length"
+          :key="index"
+          class="label"
+          type="text"
+          disabled
+          :value="`node ${index + 1}`"
+        />
       </div>
-
+      <div
+        class="d-flex align-items-start"
+        v-for="(row, rowIndex) in matrix"
+        :key="rowIndex"
+      >
+        <input
+          class="label"
+          type="text"
+          disabled
+          :value="`node ${rowIndex + 1}`"
+        />
+        <input
+          v-for="(item, index) in matrix[rowIndex]"
+          :key="rowIndex + ' ' + index"
+          type="number"
+          :disabled="index == rowIndex"
+          :value="index != rowIndex ? matrix[rowIndex][index] : 'M'"
+          @input="changeWeight(rowIndex, index, $event.target.value)"
+        />
+      </div>
     </div>
+    <form v-else class="px-5 mt-3" @submit="createMatrix">
+      <div class="text-white mb-2">
+        For finding minimum cut - enter matrix size and fill data
+        <br>
+        Choose algoritm:
+          <ul>
+            <li>Greedy Algoritm</li>
+            <li>Karger's (randomized) Algoritm</li>
+          </ul>
+        * Karger's algoritm find solution with propability p = 1 / n <sup>2</sup> 
+        for increasing this value you can choose number of iterations for algoritm
 
-    <div class="col px-0" v-else>
-      <form class="px-5 mt-5" @submit="createMatrix">
+      </div>
+      <div class="d-flex">
         <input
           required
           type="number"
@@ -49,24 +54,18 @@
           max="100"
           class="form-control"
           v-model="matrixSize"
-          placeholder="Nodes number"
+          placeholder="Enter matrix size"
         />
 
-        <button class="btn btn-outline-success d-block mx-auto my-3">
-          Initialize Matrix
+        <button class="btn btn-success d-block ml-3">
+          Initialize
         </button>
-      </form>
-    </div>
-
-    <div class="col-12 col-md-6 px-0">
-      <app-visualize :data="matrix"></app-visualize>
-    </div>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
-  import Visualize from './app-graph-visualization';
-
   export default {
     data: () => ({
       matrixSize: null,
@@ -81,9 +80,6 @@
           this.$store.dispatch('setMatrix', val);
         },
       },
-    },
-    components: {
-      'app-visualize': Visualize,
     },
     methods: {
       changeWeight(row, col, value) {
@@ -116,7 +112,7 @@
       },
       createMatrix() {
         this.matrix = this.initMatrix(Number(this.matrixSize), false);
-      }
+      },
     },
   };
 </script>
@@ -124,7 +120,7 @@
 <style scoped>
   #graph-input input,
   #graph-input .label {
-    min-width: 60px;
+    min-width: 70px;
   }
   #graph-input .label {
     text-align: center;
@@ -143,7 +139,7 @@
   #graph-input input.label:disabled {
     background: #fff;
   }
-  #graph-input input:focus {
+  #graph-input input:not(.form-control):focus {
     outline-style: dashed;
     outline-width: 2px;
     outline-color: #4062bb;
@@ -151,5 +147,6 @@
   .table-wrapper {
     width: 100%;
     overflow: auto;
+    transition: all 300ms;
   }
 </style>

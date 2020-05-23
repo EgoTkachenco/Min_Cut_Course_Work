@@ -6,24 +6,24 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    matrix: [
-      [null,2,0,0,3,0,0,0],
-      [2,null,3,0,2,2,0,0],
-      [0,3,null,4,0,0,2,0],
-      [0,0,4,null,0,0,2,2],
-      [3,2,0,0,null,3,0,0],
-      [0,2,0,0,3,null,1,0],
-      [0,0,2,2,0,1,null,3],
-      [0,0,0,2,0,0,3,null]
-    ],
-
+    // matrix: [
+    //   [null,2,0,0,3,0,0,0],
+    //   [2,null,3,0,2,2,0,0],
+    //   [0,3,null,4,0,0,2,0],
+    //   [0,0,4,null,0,0,2,2],
+    //   [3,2,0,0,null,3,0,0],
+    //   [0,2,0,0,3,null,1,0],
+    //   [0,0,2,2,0,1,null,3],
+    //   [0,0,0,2,0,0,3,null]
+    // ],
+    matrix: null,
     graph: null,
     solution: null,
+    cut: [],
     settings: {
       method: 'greedy_algoritm',
+      iterations: 1
     },
-    networkSeed: null, 
-    activeCmp: 'app-graph-input',
   },
   mutations: {
     'SET_MATRIX' (state, payload) {
@@ -41,12 +41,17 @@ export default new Vuex.Store({
     'SET_NETWORK_SEED' (state, payload) {
       state.networkSeed = payload;
     },
+    'SET_CUT' (state, payload) {
+      state.cut = payload;
+    },
+
     'GREEDY_CUT' (state) {
       state.solution = state.graph.greedyMinCut();
     },
     'KARGERS_CUT'(state) {
-      let solution = { optimal: { weight: Infinity }, iterations: [] };
-      for (let index = 0; index < 4; index++) {
+      let startTime = new Date().getTime()
+      let solution = { optimal: { weight: Infinity }, iterations: [], time: 0 };
+      for (let index = 0; index < state.settings.iterations; index++) {
         let graph = new Graph(state.matrix);
         solution.iterations.push(graph.kargersMinCut());
       }
@@ -55,6 +60,7 @@ export default new Vuex.Store({
           solution.optimal = solution.iterations[key];
         }
       }
+      solution.time = new Date().getTime() - startTime;
       state.solution = solution;
     }
   },
@@ -78,8 +84,8 @@ export default new Vuex.Store({
     fillTestData({commit}, testArray) {
       for (const row in testArray) {
         for (const col in testArray[row]) {
-          if (Number(col) > Number(row) && Number(col) < Number(row) + 3) {
-            let data = Math.floor(Math.random() * 10);
+          if (Number(col) > Number(row) && Number(col)) {
+            let data = Math.floor(Math.random() * 10 * Math.round(Math.random() * 1));
             testArray[row][col] = data;
             testArray[col][row] = data;
           }
@@ -93,9 +99,10 @@ export default new Vuex.Store({
     setNetworkSeed({commit}, seed) {
       commit('SET_NETWORK_SEED', seed);
     },
-    changeView({commit}, view) {
-      commit('SET_ACTIVE_VIEW', view);
-    }
+    setIteration({commit}, {iteration, cut}) {
+      console.log(iteration)
+      commit('SET_CUT', cut);
+    },
   },
   modules: {
     

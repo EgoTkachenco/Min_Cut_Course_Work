@@ -65,7 +65,8 @@ class Graph {
     return { node_1: node_1, node_2: edge, weight: this.nodes[node_1].edges[edge].weight }
   }
 	greedyMinCut() {
-    let solution = { optimal: { weight: Infinity }, iterations: [] };
+    let startTime = new Date().getTime()
+    let solution = { optimal: { weight: Infinity }, iterations: [], time: 0 };
     while(Object.keys(this.nodes).length > 1) {
       let minNode = this.getMinConnectiveNode();
       let maxConnectiveNode = this.getNodeMaxConnectiveNode(minNode.node);
@@ -78,6 +79,8 @@ class Graph {
         solution.optimal = item;
       }
     })
+    let endTime = new Date().getTime();
+    solution.time = endTime - startTime;
     return solution
   }
   kargersMinCut() {

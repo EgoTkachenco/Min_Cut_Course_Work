@@ -5,12 +5,19 @@
 <script>
   import vis from 'vis';
   export default {
-    props: ['data', 'cut'],
     data: () => ({
-      network: null,
+      network: null
     }),
+    computed: {
+      matrix() {
+        return this.$store.state.matrix;
+      },
+      cut() {
+        return this.$store.state.cut;
+      },
+    },
     watch: {
-      data(val) {
+      matrix(val) {
         if (val) {
           this.updateGraph();
         }
@@ -27,7 +34,7 @@
       },
       updateGraph() {
         let nodes = [];
-        for (const key in this.data) {
+        for (const key in this.matrix) {
           nodes.push({
             id: String(Number(key) + 1),
             label: String(Number(key) + 1),
@@ -43,13 +50,13 @@
           });
         }
         let edges = [];
-        for (const row in this.data) {
-          for (const col in this.data[row]) {
-            if (col > row && Number(this.data[row][col]) !== 0) {
+        for (const row in this.matrix) {
+          for (const col in this.matrix[row]) {
+            if (col > row && Number(this.matrix[row][col]) !== 0) {
               edges.push({
                 from: String(Number(row) + 1),
                 to: String(Number(col) + 1),
-                label: String(this.data[row][col]),
+                label: String(this.matrix[row][col]),
                 font: { align: 'middle' },
                 color: {
                   color: this.isInCut(String(Number(row) + 1), String(Number(col) + 1)) ? '#dc3545' : '#848484'
@@ -78,11 +85,10 @@
           physics: false,
         };
         this.network = new vis.Network(container, data, options);
-        this.$store.dispatch('setNetworkSeed', this.network.getSeed())        
       },
     },
     mounted() {
-      if (this.data) {
+      if (this.matrix) {
         this.updateGraph();
       }
     },
@@ -94,6 +100,5 @@
     width: 100%;
     height: 100%;
     background: #ebebeb;
-    border-left: 2px solid #3f3f44;
   }
 </style>

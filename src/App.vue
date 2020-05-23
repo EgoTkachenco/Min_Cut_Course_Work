@@ -3,13 +3,18 @@
     <app-navbar></app-navbar>
 
     <div class="container-fluid flex-grow-1">
-      <component :is="activeCmp"></component>
+      <div class="row" style="min-height: calc(100vh - 90px);">
+        <div class="col-12 col-md-5 px-0 panel-card"> 
+          <app-graph-input></app-graph-input>
+          <app-solution v-if="solution"></app-solution>
+        </div>
+        <div class="col px-0">
+          <app-visualize></app-visualize>
+        </div>
+      </div>
     </div>
-
-    <app-toolbar></app-toolbar>
-
     <footer>
-      <div>Tkachenko Yehor</div>
+      <div>Tkachenko Yehor Course Work</div>
       <div class="ml-auto">
         <a href="https://github.com/EgoTkachenco/Min_Cut_Course_Work">
           <svg
@@ -32,22 +37,25 @@
 
 <script>
   import Navbar from './components/app-navbar';
-  import Toolbar from './components/app-toolbar';
   import GraphInput from './components/app-graph-input';
   import Solution from './components/app-solution';
+  import Visualize from './components/app-graph-visualization';
   export default {
     data: () => ({
     }),
     computed: {
       activeCmp() {
         return this.$store.state.activeCmp;
-      }
+      },
+      solution() {
+        return this.$store.state.solution;
+      },
     },
     components: {
       'app-navbar': Navbar,
       'app-graph-input': GraphInput,
       'app-solution': Solution,
-      'app-toolbar': Toolbar
+      'app-visualize': Visualize,
     },
   };
 </script>
@@ -57,6 +65,34 @@
 
   body {
     font-family: 'Montserrat', sans-serif;
+  }
+  .panel-card {
+    overflow: auto;
+    border: 1px solid #fff;
+    border-left: 0;
+    border-right: 0;
+    background: #3f3f44; 
+    max-height: calc(100vh - 90px);
+  }
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    border-radius: 5px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #3f3f44; 
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
   }
 
   #app {
