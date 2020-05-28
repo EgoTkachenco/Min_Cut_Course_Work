@@ -24,16 +24,19 @@ export default new Vuex.Store({
       method: 'greedy_algoritm',
       iterations: 1
     },
+    showGraph: false
   },
   mutations: {
     'SET_MATRIX' (state, payload) {
       state.matrix = payload;
+      state.solution = null
     },
     'SET_GRAPH' (state) {
       state.graph = new Graph(state.matrix);
     },
     'SET_SETTINGS' (state, payload) {
       state.settings = payload;
+      state.solution = null
     },
     'SET_ACTIVE_VIEW' (state, payload) {
       state.activeCmp = payload;
@@ -44,7 +47,9 @@ export default new Vuex.Store({
     'SET_CUT' (state, payload) {
       state.cut = payload;
     },
-
+    'TOGGLE_GRAPH' (state) {
+      state.showGraph = !state.showGraph;
+    },
     'GREEDY_CUT' (state) {
       state.solution = state.graph.greedyMinCut();
     },
@@ -60,7 +65,9 @@ export default new Vuex.Store({
           solution.optimal = solution.iterations[key];
         }
       }
-      solution.time = new Date().getTime() - startTime;
+      let endTime = new Date().getTime();
+      console.log(startTime, endTime)
+      solution.time = endTime - startTime
       state.solution = solution;
     }
   },
@@ -84,8 +91,8 @@ export default new Vuex.Store({
     fillTestData({commit}, testArray) {
       for (const row in testArray) {
         for (const col in testArray[row]) {
-          if (Number(col) > Number(row) && Number(col)) {
-            let data = Math.floor(Math.random() * 10 * Math.round(Math.random() * 1));
+          if (Number(col) > Number(row) && Number(col) < Number(row) + 5) {
+            let data = Math.floor(Math.random() * 10);
             testArray[row][col] = data;
             testArray[col][row] = data;
           }

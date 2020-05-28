@@ -1,6 +1,7 @@
 <template>
-  <div id="graph-input" class="d-flex flex-column">
-    <div v-if="matrix" class="table-wrapper">
+  <div id="graph-input" class="d-flex justify-content-center">
+    <div v-if="matrix && !isLoading" class="table-wrapper panel-card">
+      <div class="h2 mb-3 text-center text-white">Матриця суміжності</div>
       <div class="d-flex align-items-start">
         <input class="label" disabled />
         <input
@@ -9,7 +10,7 @@
           class="label"
           type="text"
           disabled
-          :value="`node ${index + 1}`"
+          :value="`Вершина ${index + 1}`"
         />
       </div>
       <div
@@ -21,7 +22,7 @@
           class="label"
           type="text"
           disabled
-          :value="`node ${rowIndex + 1}`"
+          :value="`Вершина ${rowIndex + 1}`"
         />
         <input
           v-for="(item, index) in matrix[rowIndex]"
@@ -33,14 +34,16 @@
         />
       </div>
     </div>
-    <form v-else class="px-5 mt-3" @submit="createMatrix">
+    <form v-else class="px-4 mt-3 panel-card col-6" @submit="createMatrix">
       <div class="text-white mb-2">
-        For finding minimum cut - enter matrix size and fill data
+        Програма призначенна для пошуку такого дихотомічного розбиття вершин графа, при якому досягає максимуму мінімальна вага ребр розрізу, 
+        що з'єднують вершини з різних підграфів
         <br>
-        Choose algoritm:
+        <br>
+        Для рішення задачі на вибір маємо 2 алгорити:
           <ul>
-            <li>Greedy Algoritm</li>
-            <li>Karger's (randomized) Algoritm</li>
+            <li>Жадібний алгоритм</li>
+            <li>Алгоритм Каргера(рандомізований)</li>
           </ul>
         * Karger's algoritm find solution with propability p = 1 / n <sup>2</sup> 
         for increasing this value you can choose number of iterations for algoritm
@@ -58,7 +61,7 @@
         />
 
         <button class="btn btn-success d-block ml-3">
-          Initialize
+          Створити
         </button>
       </div>
     </form>
@@ -70,6 +73,7 @@
     data: () => ({
       matrixSize: null,
       sizeError: '',
+      isLoading: false,
     }),
     computed: {
       matrix: {
@@ -114,30 +118,33 @@
         this.matrix = this.initMatrix(Number(this.matrixSize), false);
       },
     },
+    created() {
+      console.time()      
+    },
+    mounted() {
+      console.timeEnd()
+    }
   };
 </script>
 
 <style scoped>
   #graph-input input,
   #graph-input .label {
-    min-width: 70px;
-  }
-  #graph-input .label {
-    text-align: center;
+    min-width: 110px;
   }
   #graph-input input {
     border-radius: 0;
     border: 0;
-    border-bottom: 1px solid black;
-    border-left: 1px solid black;
-    color: #000f0f;
+    color: #fff;
     font-weight: 500;
+    background: none;
+    text-align: center;
   }
   #graph-input input:disabled {
-    background: #bed0d5;
+    background: rgb(63, 63, 68, 0.6);
   }
   #graph-input input.label:disabled {
-    background: #fff;
+    background: none;
   }
   #graph-input input:not(.form-control):focus {
     outline-style: dashed;
@@ -145,7 +152,7 @@
     outline-color: #4062bb;
   }
   .table-wrapper {
-    width: 100%;
+    max-width: 100%;
     overflow: auto;
     transition: all 300ms;
   }

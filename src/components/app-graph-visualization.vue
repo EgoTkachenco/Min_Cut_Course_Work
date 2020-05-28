@@ -1,5 +1,5 @@
 <template>
-  <div id="network"></div>
+  <div v-if="matrix" id="network"></div>
 </template>
 
 <script>
@@ -84,7 +84,9 @@
           },
           physics: false,
         };
-        this.network = new vis.Network(container, data, options);
+        this.$nextTick(() => {
+          this.network = new vis.Network(container, data, options);
+        })
       },
     },
     mounted() {

@@ -1,14 +1,14 @@
 <template>
 	<nav>
-		<div class="h4 mb-0 w-25">
+		<div class="h4 mb-0">
 			Min-Cut Problem
 		</div>
-		<div class="d-flex w-75" v-if="matrix">
+		<div class="d-flex" v-if="matrix">
 			<button class="toolbar-btn" @click="fillTestData">
-				Test Data
+				Рандом
 			</button>
 			<button class="toolbar-btn" @click="addVertex">
-				Add Vertex
+				Додати вершину
 			</button>
 			
 
@@ -18,23 +18,27 @@
 					style="height: 25px"
 					required
 					v-model="settings.method">
-					<option selected value="greedy_algoritm">Greedy Algoritm</option>
-					<option value="kargers_algoritm">Kargers Algoritm</option>
+					<option selected value="greedy_algoritm">Жадібний Алгоритм</option>
+					<option value="kargers_algoritm">Алгоритм Каргера</option>
 				</select>
 			</div>
 			<div class="d-flex align-items-center ml-2" v-if="settings.method === 'kargers_algoritm'">
+				<label class="mb-0" for="number_of_iterations">Кількість ітерацій :</label>
 				<input
-					class="form-control py-0"
-					style="height: 25px"
+					class="form-control py-0 ml-2"
+					style="height: 25px; width: 70px"
 					type="number"
+					name="number_of_iterations"
 					required
 					v-model="settings.iterations">
 			</div>
-
-			<button class="toolbar-btn ml-auto" @click="solve">
-				Solve
-			</button>
 		</div>
+		<button class="toolbar-btn ml-auto" @click="solve">
+			Знайти рішення
+		</button>
+		<button class="toolbar-btn" :class="{'active': showGraph}" @click="show">
+			{{ showGraph ? 'Сховати' : 'Показати'}} Граф
+		</button>
 	</nav>
 </template>
 
@@ -57,9 +61,15 @@ export default {
 		},
 		matrix() {
 			return this.$store.state.matrix
+		},
+		showGraph() {
+			return this.$store.state.showGraph;
 		}
 	},
 	methods: {
+		show() {
+			this.$store.commit('TOGGLE_GRAPH');
+		},
 		fillTestData() {
 			this.$store.dispatch('fillTestData', this.initMatrix(this.matrix.length, false));
 		},
@@ -99,10 +109,12 @@ export default {
 	nav {
 		width: 100%;
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		padding: 0 25px;
-		background: #3f3f44;
+		background: rgb(63, 63, 68, 0.6);
 		color: #fff;
+    /* border-bottom: 1px solid #efefef; */
 		height: 60px;
 	}
 

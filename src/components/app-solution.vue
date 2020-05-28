@@ -1,41 +1,36 @@
 <template>
-  <div>
-    <div class="text-white">
-      <div class="text-center h4 mt-2 mb-0">Solution</div>
-      <div class="px-3">Time: {{ solution.time }}</div>
-      <div class="px-3 text-center">Optimal Solution</div>
-      <div class="px-3">Optimal Cut: {{ solution.optimal.nodes.toString() }}</div>
-      <div class="px-3">Optimal Cut weight: {{ solution.optimal.weight }}</div>
-      <hr class="bg-white my-2" />
-			<div class="px-3 text-center">
-        Iteration {{activeIteration + 1}}
+  <div class="row mt-3 justify-content-around">
+    <div class="col-12 col-md-6">
+      <div class="text-white panel-card ">
+        <div class="text-center h3 mt-2 mb-0">Розв'язок</div>
+        <div class="px-3">Рішення було знайдено за: {{ solution.time }} мс</div>
+        <hr class="bg-white my-2" />
+
+        <div class="h4 mt-3 text-center">Оптимальне рішення</div>
+        <div class="px-3">Вершини Розріз: {{ solution.optimal.nodes.toString() }}</div>
+        <div class="px-3">Вага Розрізу: {{ solution.optimal.weight }}</div>
+ 
+        <hr class="bg-white my-2" />
       </div>
-      <div class="px-3">
-        Cut Nodes: {{ solution.iterations[activeIteration].nodes }}
-      </div>
-      <div class="d-flex px-3">
-        <div>Cut weight: {{ solution.iterations[activeIteration].weight }}</div>
-        <div
-          class="text-success ml-auto"
-          v-if="solution.optimal === solution.iterations[activeIteration]"
-        >
-          Optimal Solution
-        </div>
-      </div>
-      <hr class="bg-white my-2" />
     </div>
 
-    <div
-      class="toolbar-btn text-center"
-      v-for="(iteration, index) in solution.iterations"
-      :class="{
-        active: index === activeIteration,
-        optimal: iteration === solution.optimal,
-      }"
-      @click="setActiveIteration(index)"
-      :key="index"
-    >
-      Iteration {{ index + 1 }}
+    <div class=" col-12 col-md-6">
+      <div class="panel-card">
+        <div
+          class="toolbar-btn"
+          v-for="(iteration, index) in solution.iterations"
+          @click="setActiveIteration(index)"
+          :class="{ optimal: iteration === solution.optimal, active: index === activeIteration }"
+          :key="index">
+          <div class="text-center px-3">Ітерація {{ index + 1 }}</div>
+          <div class="px-3">
+            Вершини розрізу: {{ iteration.nodes }}
+          </div>
+          <div class="px-3">
+            Вага розрізу: {{ iteration.weight }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -2,14 +2,18 @@
   <div id="app">
     <app-navbar></app-navbar>
 
-    <div class="container-fluid flex-grow-1">
-      <div class="row" style="min-height: calc(100vh - 90px);">
-        <div class="col-12 col-md-5 px-0 panel-card"> 
+    <div class="container-fluid flex-grow-1 py-3">
+      <div class="row justify-content-center" style="min-height: calc(100vh - 125px);">
+        <div class="col-12 align-items-center justify-content-center" :class="showGraph ? 'col-md-6' : 'col-md-12'"> 
           <app-graph-input></app-graph-input>
-          <app-solution v-if="solution"></app-solution>
         </div>
-        <div class="col px-0">
-          <app-visualize></app-visualize>
+        <div class="col-12 col-md-6">
+          <transition name="slide" v-if="showGraph">
+            <app-visualize></app-visualize>
+          </transition>
+        </div>
+        <div v-if="solution" class="col-12"> 
+          <app-solution></app-solution>
         </div>
       </div>
     </div>
@@ -50,6 +54,9 @@
       solution() {
         return this.$store.state.solution;
       },
+      showGraph() {
+        return this.$store.state.showGraph;
+      }
     },
     components: {
       'app-navbar': Navbar,
@@ -61,6 +68,18 @@
 </script>
 
 <style>
+  .slide-enter-active {
+  transition: all .3s ease;
+  }
+  .slide-leave-active {
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .slide-enter, .slide-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateX(100%);
+    /* position: absolute; */
+    opacity: 0;
+  }
   @import url('../node_modules/bootstrap/dist/css/bootstrap.css');
 
   body {
@@ -68,11 +87,10 @@
   }
   .panel-card {
     overflow: auto;
-    border: 1px solid #fff;
-    border-left: 0;
-    border-right: 0;
-    background: #3f3f44; 
     max-height: calc(100vh - 90px);
+    transition: all 0.3;
+    background: rgb(63, 63, 68, 0.6);
+    padding: 10px;
   }
   ::-webkit-scrollbar {
     width: 5px;
@@ -99,7 +117,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-
+    background: rgb(88,86,107);
   }
   footer {
     width: 100%;
@@ -109,15 +127,17 @@
     background: #3f3f44;
     color: #fff;
     height: 30px;
+    border-top: 1px solid #efefef;
   }
   .toolbar-btn {
-    padding: 5px 25px;
+    padding: 5px 15px;
     border: none;
     background: none;
     color: #fff;
-    font-size: 18px;
+    font-size: 16px;
     transition: all 300ms;
-    background: #3f3f44;
+    white-space: nowrap;
+    /* background: #3f3f44; */
 		outline: none;
   }
   .toolbar-btn:focus{
@@ -134,5 +154,6 @@
 	}
   .toolbar-btn.optimal {
 		background: #cceabb;
+    color: #3f3f44;
 	}
 </style>

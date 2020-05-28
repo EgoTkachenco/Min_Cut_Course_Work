@@ -89,7 +89,7 @@ class Graph {
     while(Object.keys(this.nodes).length > 2) {
       edge = this.getRandomEdge() 
       this.mergeNodes(edge.node_1, edge.node_2);
-    } 
+    }
     return { nodes: this.nodes[edge.node_2].name, weight: this.getNodeMaxConnectiveNode(edge.node_2).weight }
   }
 }
