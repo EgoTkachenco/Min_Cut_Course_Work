@@ -7,7 +7,7 @@
         <hr class="bg-white my-2" />
 
         <div class="h4 mt-3 text-center">Оптимальне рішення</div>
-        <div class="px-3">Вершини Розріз: {{ solution.optimal.nodes.toString() }}</div>
+        <div class="px-3">Вершини Розрізу: {{ solution.optimal.nodes.toString() }}</div>
         <div class="px-3">Вага Розрізу: {{ solution.optimal.weight }}</div>
  
         <hr class="bg-white my-2" />

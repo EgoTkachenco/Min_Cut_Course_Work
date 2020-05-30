@@ -6,16 +6,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    // matrix: [
-    //   [null,2,0,0,3,0,0,0],
-    //   [2,null,3,0,2,2,0,0],
-    //   [0,3,null,4,0,0,2,0],
-    //   [0,0,4,null,0,0,2,2],
-    //   [3,2,0,0,null,3,0,0],
-    //   [0,2,0,0,3,null,1,0],
-    //   [0,0,2,2,0,1,null,3],
-    //   [0,0,0,2,0,0,3,null]
-    // ],
     matrix: null,
     graph: null,
     solution: null,
@@ -24,11 +14,13 @@ export default new Vuex.Store({
       method: 'greedy_algoritm',
       iterations: 1
     },
-    showGraph: false
+    showGraph: false,
+    algError: ''
   },
   mutations: {
     'SET_MATRIX' (state, payload) {
       state.matrix = payload;
+      state.algError = ''
       state.solution = null
     },
     'SET_GRAPH' (state) {
@@ -38,12 +30,6 @@ export default new Vuex.Store({
       state.settings = payload;
       state.solution = null
     },
-    'SET_ACTIVE_VIEW' (state, payload) {
-      state.activeCmp = payload;
-    },
-    'SET_NETWORK_SEED' (state, payload) {
-      state.networkSeed = payload;
-    },
     'SET_CUT' (state, payload) {
       state.cut = payload;
     },
@@ -51,24 +37,32 @@ export default new Vuex.Store({
       state.showGraph = !state.showGraph;
     },
     'GREEDY_CUT' (state) {
-      state.solution = state.graph.greedyMinCut();
+      let graph = new Graph(state.matrix);
+      try {
+        state.solution = graph.greedyMinCut();
+      } catch(err) {
+        state.algError = "Перевірте матрицю суміжності, вона має містити 1 граф"
+      }
     },
     'KARGERS_CUT'(state) {
-      let startTime = new Date().getTime()
-      let solution = { optimal: { weight: Infinity }, iterations: [], time: 0 };
-      for (let index = 0; index < state.settings.iterations; index++) {
-        let graph = new Graph(state.matrix);
-        solution.iterations.push(graph.kargersMinCut());
-      }
-      for (const key in solution.iterations) {
-        if(solution.iterations[key].weight < solution.optimal.weight) {
-          solution.optimal = solution.iterations[key];
+      try {
+        let startTime = new Date().getTime()
+        let solution = { optimal: { weight: Infinity }, iterations: [], time: 0 };
+        for (let index = 0; index < state.settings.iterations; index++) {
+          let graph = new Graph(state.matrix);
+          solution.iterations.push(graph.kargersMinCut());
         }
+        for (const key in solution.iterations) {
+          if(solution.iterations[key].weight < solution.optimal.weight) {
+            solution.optimal = solution.iterations[key];
+          }
+        }
+        let endTime = new Date().getTime();
+        solution.time = endTime - startTime
+        state.solution = solution;
+      } catch (err) {
+        state.algError = "Перевірте матрицю суміжності, вона має містити 1 граф"
       }
-      let endTime = new Date().getTime();
-      console.log(startTime, endTime)
-      solution.time = endTime - startTime
-      state.solution = solution;
     }
   },
   actions: {
@@ -91,7 +85,7 @@ export default new Vuex.Store({
     fillTestData({commit}, testArray) {
       for (const row in testArray) {
         for (const col in testArray[row]) {
-          if (Number(col) > Number(row) && Number(col) < Number(row) + 5) {
+          if (Number(col) > Number(row) && Number(col) < Number(row) + 4) {
             let data = Math.floor(Math.random() * 10);
             testArray[row][col] = data;
             testArray[col][row] = data;
@@ -102,9 +96,6 @@ export default new Vuex.Store({
     },
     setSettings({commit}, settings) {
       commit('SET_SETTINGS', settings);
-    },
-    setNetworkSeed({commit}, seed) {
-      commit('SET_NETWORK_SEED', seed);
     },
     setIteration({commit}, {iteration, cut}) {
       console.log(iteration)

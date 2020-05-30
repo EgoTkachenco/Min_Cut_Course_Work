@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <app-navbar></app-navbar>
-
+    <div class="alert-danger err-msg" v-if="algError">{{algError}}</div>
     <div class="container-fluid flex-grow-1 py-3">
       <div class="row justify-content-center" style="min-height: calc(100vh - 125px);">
         <div class="col-12 align-items-center justify-content-center" :class="showGraph ? 'col-md-6' : 'col-md-12'"> 
@@ -56,6 +56,9 @@
       },
       showGraph() {
         return this.$store.state.showGraph;
+      },
+      algError() {
+        return this.$store.state.algError;
       }
     },
     components: {
@@ -69,10 +72,10 @@
 
 <style>
   .slide-enter-active {
-  transition: all .3s ease;
+  transition: all .5s ease;
   }
   .slide-leave-active {
-    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
   }
   .slide-enter, .slide-leave-to
   /* .slide-fade-leave-active below version 2.1.8 */ {
@@ -85,9 +88,18 @@
   body {
     font-family: 'Montserrat', sans-serif;
   }
+  .err-msg{
+    width: 300px;
+    position: absolute;
+    text-align: center;
+    top: 65px;
+    z-index: 100;
+    left: calc(50% - 150px);
+  }
   .panel-card {
     overflow: auto;
-    max-height: calc(100vh - 90px);
+    min-height: 474px;  
+    max-height: 474px;
     transition: all 0.3;
     background: rgb(63, 63, 68, 0.6);
     padding: 10px;
@@ -117,6 +129,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    position: relative;
     background: rgb(88,86,107);
   }
   footer {
@@ -124,10 +137,9 @@
     display: flex;
     align-items: center;
     padding: 0 25px;
-    background: #3f3f44;
+    background: rgb(63, 63, 68, 0.6);
     color: #fff;
     height: 30px;
-    border-top: 1px solid #efefef;
   }
   .toolbar-btn {
     padding: 5px 15px;
