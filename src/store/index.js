@@ -101,6 +101,76 @@ export default new Vuex.Store({
       console.log(iteration)
       commit('SET_CUT', cut);
     },
+    getResearch_1({state}) {
+      let size = 5;
+      let alg_repeat = 50;
+      console.log(state)
+      let kargers_iterations = 20;
+      
+      let solutions = {greedy: [], kargers: []}
+      debugger
+      
+      while(size <= 100) {
+        let matrix = new Array(size).fill(0);
+        
+        for (const row in matrix) {
+          matrix[row] = new Array(size).fill(0);
+          for (const col in matrix[row]) {
+            matrix[row][col] = col != row ? 0 : null;
+          }
+        }
+
+        for (const row in matrix) {
+          for (const col in matrix[row]) {
+            if (Number(col) > Number(row) && Number(col) < Number(row) + 4) {
+              let data = Math.floor(Math.random() * 10);
+              matrix[row][col] = data;
+              matrix[col][row] = data;
+            } 
+          }
+        }
+
+        let averageTime = 0;
+
+        for (let index = 0; index < alg_repeat; index++) {
+          let graph = new Graph(matrix);
+          let solution = null;
+          try {
+            solution = graph.greedyMinCut();
+          } catch(err) {
+            solution = null
+          }
+          averageTime += solution.time;
+        }
+        averageTime = averageTime / alg_repeat;
+        solutions.greedy.push({ time: averageTime, size: size });
+        
+        averageTime = 0;
+
+        for (let index = 0; index < alg_repeat; index++) {
+          let startTime = new Date().getTime()
+          let solution = { optimal: { weight: Infinity }, iterations: [], time: 0 };
+          for (let index = 0; index < kargers_iterations; index++) {
+            let graph = new Graph(matrix);
+            solution.iterations.push(graph.kargersMinCut());
+          }
+          for (const key in solution.iterations) {
+            if(solution.iterations[key].weight < solution.optimal.weight) {
+              solution.optimal = solution.iterations[key];
+            }
+          }
+          let endTime = new Date().getTime();
+          solution.time = endTime - startTime
+          averageTime += solution.time;
+        }
+        averageTime = averageTime / alg_repeat;
+        solutions.kargers.push({ time: averageTime, size: size });
+        
+        
+        size++;
+      }
+      debugger
+    }
   },
   modules: {
     

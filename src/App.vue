@@ -19,6 +19,7 @@
     </div>
     <footer>
       <div>Tkachenko Yehor Course Work</div>
+      <div class="mx-3" @click="showResearch = true">Research</div>
       <div class="ml-auto">
         <a href="https://github.com/EgoTkachenco/Min_Cut_Course_Work">
           <svg
@@ -36,6 +37,8 @@
         </a>
       </div>
     </footer>
+
+    <app-research v-if="showResearch" @close="showResearch = false"></app-research>
   </div>
 </template>
 
@@ -44,8 +47,11 @@
   import GraphInput from './components/app-graph-input';
   import Solution from './components/app-solution';
   import Visualize from './components/app-graph-visualization';
+  import Research from './components/app-research';
+  
   export default {
     data: () => ({
+      showResearch: false
     }),
     computed: {
       activeCmp() {
@@ -66,6 +72,7 @@
       'app-graph-input': GraphInput,
       'app-solution': Solution,
       'app-visualize': Visualize,
+      'app-research': Research
     },
   };
 </script>
