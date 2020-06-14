@@ -20,6 +20,8 @@
 					v-model="settings.method">
 					<option selected value="greedy_algoritm">Жадібний Алгоритм</option>
 					<option value="kargers_algoritm">Алгоритм Каргера</option>
+					<option value="kernighan_lin_algoritm">Алгоритм Ліна-Кернігана</option>
+					
 				</select>
 			</div>
 			<div class="d-flex align-items-center ml-2" v-if="settings.method === 'kargers_algoritm'">
@@ -33,10 +35,10 @@
 					v-model="settings.iterations">
 			</div>
 		</div>
-		<button class="toolbar-btn ml-auto" @click="solve">
+		<button v-if="matrix" class="toolbar-btn ml-auto" @click="solve">
 			Знайти рішення
 		</button>
-		<button class="toolbar-btn" :class="{'active': showGraph}" @click="show">
+		<button v-if="matrix" class="toolbar-btn" :class="{'active': showGraph}" @click="show">
 			{{ showGraph ? 'Сховати' : 'Показати'}} Граф
 		</button>
 	</nav>

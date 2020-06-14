@@ -7,11 +7,16 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     matrix: null,
+    // matrix: [[null,6,3,0,0,0,0,0],[6,null,0,5,0,0,7,0],[3,0,null,0,4,0,0,0],[0,5,0,null,0,1,0,0],[0,0,4,0,null,0,3,0],[0,0,0,1,0,null,0,5],[0,7,0,0,3,0,null,7],[0,0,0,0,0,5,7,null]],
+    
+    
+    // matrix: [[null,4,3,0,7,0],[4,null,0,4,0,2],[3,0,null,5,8,0],[0,4,5,null,0,3],[7,0,8,0,null,5],[0,2,0,3,5,null]],
+    // matrix: [[null,3,3,1,0,0],[3,null,0,0,0,0],[3,0,null,0,0,0],[1,0,0,null,3,3],[0,0,0,3,null,3],[0,0,0,3,3,null]],
     graph: null,
     solution: null,
     cut: [],
     settings: {
-      method: 'greedy_algoritm',
+      method: 'kernighan_lin_algoritm',
       iterations: 1
     },
     showGraph: false,
@@ -39,7 +44,7 @@ export default new Vuex.Store({
     'GREEDY_CUT' (state) {
       let graph = new Graph(state.matrix);
       try {
-        state.solution = graph.greedyMinCut();
+        state.solution = graph.greedyPartition();
       } catch(err) {
         state.algError = "Перевірте матрицю суміжності, вона має містити 1 граф"
       }
@@ -63,6 +68,17 @@ export default new Vuex.Store({
       } catch (err) {
         state.algError = "Перевірте матрицю суміжності, вона має містити 1 граф"
       }
+    },
+    'KERNIGHAN_LIN'(state) {
+      let graph = new Graph(state.matrix);
+      try {
+        let start = new Date().getTime()
+        state.solution = graph.kernighanLinPartition();
+        let end = new Date().getTime()
+        console.log(end - start)
+      } catch(err) {
+        state.algError = "Перевірте матрицю суміжності, вона має містити 1 граф"
+      }
     }
   },
   actions: {
@@ -78,6 +94,10 @@ export default new Vuex.Store({
         case 'kargers_algoritm':
           commit('KARGERS_CUT')
           break;
+        case 'kernighan_lin_algoritm': {
+          commit('KERNIGHAN_LIN')
+          break;
+        }
         default:
           break;
       }
@@ -85,7 +105,7 @@ export default new Vuex.Store({
     fillTestData({commit}, testArray) {
       for (const row in testArray) {
         for (const col in testArray[row]) {
-          if (Number(col) > Number(row) && Number(col) < Number(row) + 4) {
+          if (Number(col) > Number(row)) {
             let data = Math.floor(Math.random() * 10);
             testArray[row][col] = data;
             testArray[col][row] = data;

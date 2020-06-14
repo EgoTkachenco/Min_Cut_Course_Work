@@ -19,7 +19,7 @@
     </div>
     <footer>
       <div>Tkachenko Yehor Course Work</div>
-      <div class="mx-3" @click="showResearch = true">Research</div>
+      <div class="mx-3" @click="showResearch = true">Дослідження</div>
       <div class="ml-auto">
         <a href="https://github.com/EgoTkachenco/Min_Cut_Course_Work">
           <svg

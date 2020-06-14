@@ -36,22 +36,11 @@
         </div>
       </div>
     </div>
-    <form v-else class="px-4 mt-3 panel-card col-6" @submit="createMatrix($event)">
-      <div class="text-white mb-2">
-        Програма призначенна для пошуку такого дихотомічного розбиття вершин графа, при якому досягає максимуму мінімальна вага ребр розрізу, 
-        що з'єднують вершини з різних підграфів
-        <br>
-        <br>
-        Для рішення задачі на вибір маємо 2 алгоритми:
-          <ul>
-            <li>Жадібний алгоритм</li>
-            <li>Алгоритм Каргера(рандомізований)</li>
-          </ul>
-        * Karger's algoritm find solution with propability p = 1 / n <sup>2</sup> 
-        for increasing this value you can choose number of iterations for algoritm
-
+    <form v-else class="px-4 mt-3 panel-card col-6 d-flex flex-column justify-content-center" @submit="createMatrix($event)">
+      <div class="text-white mb-2 text-center">
+        Згенеруйте матрицю суміжності потрібного розміру, щоб ввести дані вручну
       </div>
-      <div class="d-flex mt-5">
+      <div class="d-flex">
         <input
           required
           type="number"
@@ -66,7 +55,7 @@
           Створити
         </button>
       </div>
-      <div class="text-center text-white my-3">Або завантажте з файлу</div>
+      <div class="text-center text-white my-3">Або завантажте матрицю з файла</div>
       <div class="d-flex flex-column align-items-center">
         <input
           type="file"

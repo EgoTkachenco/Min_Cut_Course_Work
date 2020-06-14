@@ -92,6 +92,166 @@ class Graph {
     }
     return { nodes: this.nodes[edge.node_2].name, weight: this.getNodeMaxConnectiveNode(edge.node_2).weight }
   }
+  minEdge(A) {
+    let a_min = { node: 0, weight: 1000}
+    for (const key_a in A) {
+      let a = A[key_a]
+      for (const edge in a.edges) {
+        const element = a.edges[edge];
+        if(element.weight < a_min.weight && !A[edge]) {
+          a_min = { node: key_a, weight: element.weight }
+        }
+      }
+    }
+    return a_min
+  }
+  isConnective(g) {
+    let firstKey = Object.keys(g)[0]
+    let marked_g = Object.assign({}, {[firstKey]: g[firstKey]});
+    let updated = false;
+
+    do {
+      updated = false
+      for (const key in marked_g) {
+        let node = marked_g[key]
+        for (const to in node.edges) {
+          if(g[to] && !marked_g[to]) {
+            marked_g[to] = g[to];
+            updated = true
+          }
+        }
+      }
+    } while(updated)
+
+    return Object.keys(g).length === Object.keys(marked_g).length
+  }
+  kernighanLinPartition() {
+    let n = Object.keys(this.nodes).length;
+    let i = 0;
+    let A = {}; 
+    let B = {};
+    // determine a balanced initial partition of the nodes into sets A and B
+    for (const key in this.nodes) {
+      const node = this.nodes[key];
+      if(i < n/2) {
+        A[key] = Object.assign({}, node, { marked: false })
+      } else {
+        B[key] = Object.assign({}, node, { marked: false })
+      }
+      i++
+    }
+    
+    let result = {optimal: null, iterations: []}
+    // Algoritm stops if there's no increasing of min edge in cut
+    let g_max = this.minEdge(A).weight;
+    let new_g_max = 0
+    do {
+      // Swap while there's unmarked nodes
+      let swaped_A = Object.assign({}, A)
+      let swaped_B = Object.assign({}, B)
+      let swaps = [];
+      for (let i = 0; i < n/2; i++) {
+        let d_swap = { a: null, b: null, weight: 0 };
+        for (const key_a in swaped_A) {
+          const a = swaped_A[key_a];
+          if(!a.marked) {
+            for (const key_b in swaped_B) {
+              let b = swaped_B[key_b]
+              if(!b.marked) {
+                let tempA = Object.assign({}, swaped_A, {[key_b]: b})
+                let tempB = Object.assign({}, swaped_B, {[key_a]: a})
+                delete tempA[key_a];
+                delete tempB[key_b];
+                if(this.isConnective(tempA) && this.isConnective(tempB)) {
+                  let m_edge = this.minEdge(tempA);
+                  if(m_edge.weight > d_swap.weight) {
+                    d_swap = { a: key_a, b: key_b, weight: m_edge.weight };
+                  }
+                }
+              }
+              
+            }
+          }
+        }  
+        swaped_A[d_swap.b] = swaped_B[d_swap.b]
+        swaped_B[d_swap.a] = swaped_A[d_swap.a]
+        swaped_A[d_swap.b].marked = true
+        swaped_B[d_swap.a].marked = true
+        delete swaped_A[d_swap.a]
+        delete swaped_B[d_swap.b]
+        swaps.push(d_swap)
+      }
+      // get All swaps
+      g_max = this.minEdge(A).weight;
+      let nodeNames = Object.keys(A).map(item => Number(item) + 1).join(' ');
+      result.iterations.push({ nodes: nodeNames, weight: g_max})
+      // calc k
+      let k = 0;
+      swaps.forEach((item, index) => {
+        if(item.weight > g_max) {
+          k = index + 1
+        }
+      })
+      // Swap subsets from A to B
+      swaps = swaps.slice(0, k)
+      swaps.forEach(item => {
+        A[item.b] = B[item.b]
+        B[item.a] = A[item.a]
+        delete B[item.b]
+        delete A[item.a]
+      })
+      // Unmark all nodes
+      for (const key in A) {
+        A[key].marked = false;
+      }
+      for (const key in B) {
+        B[key].marked = false;
+      }
+      new_g_max = this.minEdge(A).weight;
+    } while(new_g_max > g_max)
+    let names = []
+    for (const key in A) {
+      const element = A[key];
+      names.push(element.name)
+    }
+    result.optimal = result.iterations[result.iterations.length - 1]
+    return result
+  }
+  greedyPartition() {
+    let n = Object.keys(this.nodes).length;
+    let A = {0: this.nodes[0]}
+    let B = Object.assign({}, this.nodes)
+    delete B[0]
+
+    let result = {optimal: {}, iterations: []}
+    for (let i = 0; i < n / 2 - 1; i++) {
+      let minEdge = { weight : 0 }
+      for (const key in B) {
+        let connectiveA = false
+        let b = B[key];
+        let tempA = Object.assign({}, A, {[key]: b})
+        for (const to in b.edges) {
+          if(A[to]) {
+            connectiveA = true
+          }
+        }
+        let tempAMin = this.minEdge(tempA)
+        if(connectiveA && tempAMin.weight > minEdge.weight) {
+          minEdge = {node: key, weight: tempAMin.weight}
+        }
+      }
+      if(minEdge.node) {
+        A[minEdge.node] = B[minEdge.node]
+        delete B[minEdge.node]
+        result.iterations.push({ nodes: Object.keys(A).map(item => Number(item) + 1).join(' '), weight: minEdge.weight})
+      } else {
+        break
+      }
+    }
+    
+    result.optimal = result.iterations[result.iterations.length - 1]
+    return result
+  }
 }
 
 module.exports = Graph;
