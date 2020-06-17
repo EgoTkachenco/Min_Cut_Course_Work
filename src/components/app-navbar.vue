@@ -19,7 +19,7 @@
 					required
 					v-model="settings.method">
 					<option selected value="greedy_algoritm">Жадібний Алгоритм</option>
-					<option value="kargers_algoritm">Алгоритм Каргера</option>
+					<!-- <option value="kargers_algoritm">Алгоритм Каргера</option> -->
 					<option value="kernighan_lin_algoritm">Алгоритм Ліна-Кернігана</option>
 					
 				</select>

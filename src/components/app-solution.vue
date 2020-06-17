@@ -8,7 +8,7 @@
 
         <div class="h4 mt-3 text-center">Оптимальне рішення</div>
         <div class="px-3">Вершини Розрізу: {{ solution.optimal.nodes.toString() }}</div>
-        <div class="px-3">Вага Розрізу: {{ solution.optimal.weight }}</div>
+        <div class="px-3">Вага мінімального ребра: {{ solution.optimal.weight }}</div>
  
         <hr class="bg-white my-2" />
       </div>
@@ -27,7 +27,7 @@
             Вершини розрізу: {{ iteration.nodes }}
           </div>
           <div class="px-3">
-            Вага розрізу: {{ iteration.weight }}
+            Вага мінімального ребра: {{ iteration.weight }}
           </div>
         </div>
       </div>

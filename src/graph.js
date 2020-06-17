@@ -133,7 +133,7 @@ class Graph {
     // determine a balanced initial partition of the nodes into sets A and B
     for (const key in this.nodes) {
       const node = this.nodes[key];
-      if(i < n/2) {
+      if(i < Math.round(n/2)) {
         A[key] = Object.assign({}, node, { marked: false })
       } else {
         B[key] = Object.assign({}, node, { marked: false })
@@ -150,7 +150,7 @@ class Graph {
       let swaped_A = Object.assign({}, A)
       let swaped_B = Object.assign({}, B)
       let swaps = [];
-      for (let i = 0; i < n/2; i++) {
+      for (let i = 0; i < Math.round(n/2); i++) {
         let d_swap = { a: null, b: null, weight: 0 };
         for (const key_a in swaped_A) {
           const a = swaped_A[key_a];
@@ -162,24 +162,26 @@ class Graph {
                 let tempB = Object.assign({}, swaped_B, {[key_a]: a})
                 delete tempA[key_a];
                 delete tempB[key_b];
-                if(this.isConnective(tempA) && this.isConnective(tempB)) {
+                // if(this.isConnective(tempA) && this.isConnective(tempB)) {
                   let m_edge = this.minEdge(tempA);
                   if(m_edge.weight > d_swap.weight) {
                     d_swap = { a: key_a, b: key_b, weight: m_edge.weight };
                   }
-                }
+                // }
               }
               
             }
           }
         }  
-        swaped_A[d_swap.b] = swaped_B[d_swap.b]
-        swaped_B[d_swap.a] = swaped_A[d_swap.a]
-        swaped_A[d_swap.b].marked = true
-        swaped_B[d_swap.a].marked = true
-        delete swaped_A[d_swap.a]
-        delete swaped_B[d_swap.b]
-        swaps.push(d_swap)
+        if(d_swap.a && d_swap.b) {
+          swaped_A[d_swap.b] = swaped_B[d_swap.b]
+          swaped_B[d_swap.a] = swaped_A[d_swap.a]
+          swaped_A[d_swap.b].marked = true
+          swaped_B[d_swap.a].marked = true
+          delete swaped_A[d_swap.a]
+          delete swaped_B[d_swap.b]
+          swaps.push(d_swap)
+        }
       }
       // get All swaps
       g_max = this.minEdge(A).weight;
@@ -224,7 +226,8 @@ class Graph {
     delete B[0]
 
     let result = {optimal: {}, iterations: []}
-    for (let i = 0; i < n / 2 - 1; i++) {
+    result.iterations.push({ nodes: Object.keys(A).map(item => Number(item) + 1).join(' '), weight: this.minEdge(A).weight})
+    for (let i = 0; i < Math.round(n/2) - 1; i++) {
       let minEdge = { weight : 0 }
       for (const key in B) {
         let connectiveA = false
