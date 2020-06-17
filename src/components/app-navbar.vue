@@ -1,7 +1,7 @@
 <template>
 	<nav>
 		<div class="h4 mb-0">
-			Min-Cut Problem
+			Partition Problem
 		</div>
 		<div class="d-flex" v-if="matrix">
 			<button class="toolbar-btn" @click="fillTestData">

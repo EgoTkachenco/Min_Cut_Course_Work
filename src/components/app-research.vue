@@ -109,15 +109,15 @@
               pointHighlightStroke: "rgba(151,187,205,1)",
               data: timeData
             },
-            {
-              fillColor: "rgba(220, 53, 69, 0.2)",
-              strokeColor: "rgba(220, 53, 69, 1)",
-              pointColor: "rgba(220, 53, 69, 1)",
-              pointStrokeColor: "#fff",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(220, 53, 69, 1)",
-              data: [0.35,0.28,0.49,0.35,0.47,0.61,0.81,0.95,1.28,1.46,1.7,2.44,3.38,1.86,2.74]
-            }
+            // {
+            //   fillColor: "rgba(220, 53, 69, 0.2)",
+            //   strokeColor: "rgba(220, 53, 69, 1)",
+            //   pointColor: "rgba(220, 53, 69, 1)",
+            //   pointStrokeColor: "#fff",
+            //   pointHighlightFill: "#fff",
+            //   pointHighlightStroke: "rgba(220, 53, 69, 1)",
+            //   data: [0.35,0.28,0.49,0.35,0.47,0.61,0.81,0.95,1.28,1.46,1.7,2.44,3.38,1.86,2.74]
+            // }
           ]}
         let ctx = document.getElementById("myChart").getContext("2d");
         let options = { };
