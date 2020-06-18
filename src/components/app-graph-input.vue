@@ -1,6 +1,6 @@
 <template>
   <div id="graph-input" class="d-flex justify-content-center">
-    <div v-if="matrix" class="panel-card">
+    <div v-if="matrix" class="panel-card animate__animated animate__backInDown">
       <div class="h2 mb-3 text-center text-white">Матриця суміжності</div>
       <div class="table-wrapper">
         <div class="d-flex align-items-start">
@@ -30,13 +30,20 @@
             :key="rowIndex + ' ' + index"
             type="number"
             :disabled="index == rowIndex"
-            :value="index != rowIndex ? matrix[rowIndex][index] : 'M'"
+            :value="index != rowIndex ? matrix[rowIndex][index] : ''"
             @input="changeWeight(rowIndex, index, $event.target.value)"
           />
         </div>
       </div>
     </div>
-    <form v-else class="px-4 mt-3 panel-card col-6 d-flex flex-column justify-content-center" @submit="createMatrix($event)">
+    <div v-else-if="isLoading" class="spinner-card">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <form v-else style="min-height: auto"
+      class="animate__animated animate__backInDown px-4 mt-3 panel-card col-6 d-flex flex-column justify-content-center" 
+      @submit="createMatrix($event)">
       <div class="text-white mb-2 text-center">
         Згенеруйте матрицю суміжності потрібного розміру, щоб ввести дані вручну
       </div>
@@ -68,6 +75,7 @@
         </div>
       </div>
     </form>
+    
   </div>
 </template>
 
@@ -76,7 +84,8 @@
     data: () => ({
       matrixSize: null,
       sizeError: '',
-      errorFile: ''
+      errorFile: '',
+      isLoading: false
     }),
     computed: {
       matrix: {
@@ -119,9 +128,10 @@
       },
       createMatrix(e) {
         e.preventDefault();
-        this.$nextTick(() => {
+        this.isLoading = true;
+        setTimeout(() => {
           this.matrix = this.initMatrix(Number(this.matrixSize), false);
-        })
+        }, 10)
       },
       loadFile(e) {
         this.errorFile = '';

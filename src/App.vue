@@ -7,9 +7,9 @@
         <div class="col-12 align-items-center justify-content-center" :class="showGraph ? 'col-md-6' : 'col-md-12'"> 
           <app-graph-input></app-graph-input>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 ">
           <transition name="slide" v-if="showGraph">
-            <app-visualize></app-visualize>
+            <app-visualize class="animate__animated animate__backInDown"></app-visualize>
           </transition>
         </div>
         <div v-if="solution" class="col-12"> 
@@ -79,10 +79,10 @@
 
 <style>
   .slide-enter-active {
-  transition: all .5s ease;
+  transition: all .1 ease;
   }
   .slide-leave-active {
-    transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transition: all .1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
   }
   .slide-enter, .slide-leave-to
   /* .slide-fade-leave-active below version 2.1.8 */ {
@@ -109,7 +109,13 @@
     max-height: 474px;
     transition: all 0.3;
     background: rgb(63, 63, 68, 0.6);
+    padding: 25px 10px;
+    border-radius: 10px;
+  }
+  .spinner-card{
+    background: rgb(63, 63, 68, 0.6);
     padding: 10px;
+    border-radius: 10px;
   }
   ::-webkit-scrollbar {
     width: 5px;

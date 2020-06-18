@@ -117,7 +117,7 @@ export default {
 		background: rgb(63, 63, 68, 0.6);
 		color: #fff;
     /* border-bottom: 1px solid #efefef; */
-		height: 60px;
+		min-height: 60px;
 	}
 
   

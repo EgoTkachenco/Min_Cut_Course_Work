@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3 justify-content-around">
     <div class="col-12 col-md-6">
-      <div class="text-white panel-card ">
+      <div class="text-white panel-card animate__animated animate__backInDown">
         <div class="text-center h3 mt-2 mb-0">Розв'язок</div>
         <div class="px-3">Рішення було знайдено за: {{ solution.time }} мс</div>
         <hr class="bg-white my-2" />
@@ -15,7 +15,7 @@
     </div>
 
     <div class=" col-12 col-md-6">
-      <div class="panel-card">
+      <div class="panel-card animate__animated animate__backInDown">
         <div
           class="toolbar-btn"
           v-for="(iteration, index) in solution.iterations"

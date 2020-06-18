@@ -1,7 +1,12 @@
 <template>
   <div class="dialog-wrapper">
     <div class="container-fluid">
-      <div class="row pt-5">
+      <div class="row pt-2">
+        <div class="col-12">
+          <button class="btn btn-dark" @click="close">Back</button>
+          </div>
+      </div>
+      <div class="row pt-3">
         <div class="col-4">
           <form @submit.prevent="getResearch" class="p-3" style="background: rgb(63, 63, 68, 0.6);">
               <div class="d-flex align-items-center my-2">
