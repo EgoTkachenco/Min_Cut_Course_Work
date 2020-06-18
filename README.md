@@ -1,4 +1,11 @@
-# min_cut_course_work
+# Partition Problem Course Work
+
+### Demo URL - https://min-cut-course-work.firebaseapp.com/
+
+#### Implemented Algoritms:
+* Greedy Algoritm
+* Kernighan-Lin Algoritm
+
 
 ## Project setup
 ```
